@@ -28,7 +28,7 @@ namespace Redox.Payments
             var items = new StringBuilder();
             var properties = new Dictionary<string,string>();
 
-            PostPaymentMessage(properties);
+            await PostPaymentMessage(properties, log);
 
 
             foreach (var item in req.Form){
@@ -60,15 +60,18 @@ return result;
         //         : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
         }
 
-        private static async Task PostPaymentMessage(Dictionary<string, string> properties)
+        private static async Task PostPaymentMessage(Dictionary<string, string> properties, ILogger log)
         {
             var connectionString =
                 "Endpoint=sb://simplylog-eu.servicebus.windows.net/;SharedAccessKeyName=tranzila-redox-payment;SharedAccessKey=+Jf1uZEO5qg6y9mrr2jQ7iV0/3I/DBWUC+ITKqz8j+8=;EntityPath=redox-payments";
             var queueName = "redox-payments";
+            log.LogInformation($"Posting message to '{queueName}'.");
             var json = JsonConvert.SerializeObject(properties);
+            log.LogInformation($"Message Content: {json}.");
             var encoded = Encoding.UTF8.GetBytes(json);
             var message = new Message(encoded);
             var queueClient = new QueueClient(connectionString, queueName);
+            
             await queueClient.SendAsync(message);
         }
     }
