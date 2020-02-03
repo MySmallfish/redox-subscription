@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 
 namespace Redox.Payments
 {
@@ -30,21 +31,21 @@ namespace Redox.Payments
             var url = $"https://secure5.tranzila.com/cgi-bin/tranzila71u.cgi";
 
 
-            var client = new System.Net.Http.HttpClient();
-            var content = "supplier=redoxtok&TranzilaPW={pwd}&TranzilaTK={token}&expdate={exp}&sum={sum}&currency=1&cred_type=1&tranmode=A";
-            var response = await client.PostAsync(url, new StringContent(content, "application/x-www-form-urlencoded"));
+            // var client = new System.Net.Http.HttpClient();
+            // var content = "supplier=redoxtok&TranzilaPW={pwd}&TranzilaTK={token}&expdate={exp}&sum={sum}&currency=1&cred_type=1&tranmode=A";
+            // var response = await client.PostAsync(url, new StringContent(content, "application/x-www-form-urlencoded"));
             
-            var text = await response.Content.ReadAsStringAsync();
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            // var text = await response.Content.ReadAsStringAsync();
+            // log.LogInformation("C# HTTP trigger function processed a request.");
 
-            var result = (ActionResult)new OkObjectResult(content);
-            return result;
-//             var items = new List<string>();
-//             foreach(var item in req.Form){
-//                 items.Add($"{item.Key}: {item.Value}");
-//             }
-//             var result = await Task.FromResult((ActionResult)new OkObjectResult($"items: {JsonConvert.SerializeObject(items)}, REJECTED!!!!"));
-// return result;
+            // var result = (ActionResult)new OkObjectResult(content);
+            // return result;
+            var items = new StringBuilder();
+            foreach(var item in req.Form){
+                items.Append($"<li>{item.Key}: {item.Value}</li>");
+            }
+            var result = await Task.FromResult((ActionResult)new OkObjectResult($"<h1 color='red'>REJECTED!</h1>Response:<ul>{items}"));
+return result;
         //     string name = req.Query["contact"];
         // if (string.IsNullOrEmpty(name)){
         //     name = req.Form["contact"];

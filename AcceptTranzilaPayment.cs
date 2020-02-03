@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Redox.Payments
 {
@@ -20,11 +21,11 @@ namespace Redox.Payments
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var items = new List<string>();
+            var items = new StringBuilder();
             foreach(var item in req.Form){
-                items.Add($"{item.Key}: {item.Value}");
+                items.Append($"<li>{item.Key}: {item.Value}</li>");
             }
-            var result = await Task.FromResult((ActionResult)new OkObjectResult($"items: {JsonConvert.SerializeObject(items)}, USER ID: {req.Query["userId"]}"));
+            var result = await Task.FromResult((ActionResult)new OkObjectResult($"<h1 color='green'>ACCEPTED!</h1>Response:<ul>{items}"));
 return result;
         //     string name = req.Query["contact"];
         // if (string.IsNullOrEmpty(name)){
