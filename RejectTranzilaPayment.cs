@@ -17,7 +17,7 @@ namespace Redox.Payments
 {
     public static class RejectTranzilaPayment
     {
-        [FunctionName("RejectTranzilaPayment")]
+        [FunctionName("Reject")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
