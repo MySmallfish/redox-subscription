@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace Redox.Payments
@@ -25,7 +26,13 @@ namespace Redox.Payments
             foreach(var item in req.Form){
                 items.Append($"<li>{item.Key}: {item.Value}</li>");
             }
-            var result = await Task.FromResult((ActionResult)new OkObjectResult($"<h1 color='green'>ACCEPTED!</h1>Response:<ul>{items}"));
+            
+            var result = await Task.FromResult((ActionResult)new ContentResult()
+            {
+                Content= $"<h1 color='green'>ACCEPTED!</h1>Response:<ul>{items}",
+                StatusCode = (int)HttpStatusCode.OK,
+                ContentType = "text/html"
+            });
 return result;
         //     string name = req.Query["contact"];
         // if (string.IsNullOrEmpty(name)){
