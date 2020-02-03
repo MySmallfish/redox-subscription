@@ -1,0 +1,6 @@
+recur:
+["Response: 000","o_tranmode: ","pdsec: ","expmonth: 09","contact: ","email: yair@redox.co.il","currency: 1","tenantId: 1","expyear: 23","supplier: redox","sum: 57","benid: 4jh886hhl1c4qptl7fb96k4ai5","o_cred_type: ","recur_transaction: 4_approved","lang: il","ccard: ","userId: 1","phone: 0525239030","fail_url_address: http://localhost:7071/api/RejectTranzilaPayment","ccno: 6956","success_url_address: http://localhost:7071/api/AcceptTranzilaPayment","o_npay: ","notify_url_address: http://localhost:7071/api/NotifyTranzilaPayment","ConfirmationCode: 0000000","cardtype: 1","cardissuer: 1","cardaquirer: 6","index: 50","Tempref: 07480001"]
+
+not recur:
+REJECTED:
+ ["Response: 004","o_tranmode: ","pdsec: ","expmonth: 09","contact: ","email: yair@redox.co.il","currency: 1","tenantId: 1","expyear: 23","supplier: redox","sum: 57","benid: 4jh886hhl1c4qptl7fb96k4ai5","o_cred_type: ","lang: il","ccard: ","userId: 1","phone: 0525239030","fail_url_address: http://localhost:7071/api/RejectTranzilaPayment","ccno: 6956","success_url_address: http://localhost:7071/api/AcceptTranzilaPayment","o_npay: ","notify_url_address: http://localhost:7071/api/NotifyTranzilaPayment","ConfirmationCode: 0000000","cardtype: 1","cardissuer: 1","cardaquirer: 6","index: 51","Tempref: 07700001","maxpay: "]

@@ -6,7 +6,7 @@
             }
         function buildQuery(config){
             var baseUrl = "http://localhost:7071";
-            baseUrl = "https://tranzila-redox-payment.azurewebsites.net"
+            //baseUrl = "https://tranzila-redox-payment.azurewebsites.net"
             //"sum=57&userId=1&tenantId=1&currency=1&contact=yairyair&lang=il&recur_transaction=4"
             var query = [];
             add(query, "lang", "il");
@@ -16,7 +16,8 @@
 
             if (config.Plan){
                 add(query, "sum", config.Plan.MonthlyFee);
-                add(query, "recur_transaction", "4_approved");
+                //add(query, "recur_transaction", "4_approved");
+                add(query, "tranmode", "AK");
                 add(query, "pdsec", config.Plan.Name);
 
             } else {
@@ -72,7 +73,7 @@
         </script>
     </head>
     <body>
-
+//Hb82fc842601f966956
         <h1>REDOX</h1>
         <button type="button" onclick="takePayment('basic')">
             BASIC PLAN
