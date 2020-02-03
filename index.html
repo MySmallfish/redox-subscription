@@ -1,0 +1,87 @@
+<html>
+    <head>REdox Payments
+        <script>
+            function add(query, name, value){
+                query.push(name + "=" + encodeURIComponent(value));
+            }
+        function buildQuery(config){
+            var baseUrl = "http://localhost:7071";
+            baseUrl = "https://tranzila-redox-payment.azurewebsites.net"
+            //"sum=57&userId=1&tenantId=1&currency=1&contact=yairyair&lang=il&recur_transaction=4"
+            var query = [];
+            add(query, "lang", "il");
+            add(query, "success_url_address", baseUrl + "/api/AcceptTranzilaPayment");
+            add(query, "fail_url_address", baseUrl + "/api/RejectTranzilaPayment");
+            add(query, "notify_url_address", baseUrl + "/api/NotifyTranzilaPayment");
+
+            if (config.Plan){
+                add(query, "sum", config.Plan.MonthlyFee);
+                add(query, "recur_transaction", "4_approved");
+                add(query, "pdsec", config.Plan.Name);
+
+            } else {
+                add(query, "sum", config.Amount);
+                add(query, "pdsec", config.Name);
+            }
+
+            add(query, "userId", config.User.UserId);
+            add(query, "tenantId", config.Tenant.Id);
+            add(query, "currency", 1);
+            add(query, "contact", config.User.FullName);
+            add(query, "email", config.User.Email)
+            add(query, "phone", config.User.Phone)
+
+            return query.join("&");
+        }
+        var userConfig = {
+                User: {
+                    UserId: 1,
+                    FullName: "יאיר כהן",
+                    Email:"yair@redox.co.il",
+                    Phone:"0525239030"
+                },
+                Tenant: {
+                    Id: 1,
+                    Name: "החתמה דיגיטלית למתווכים בלה בלה בלה"
+                }
+            }
+        var products = {
+            "basic":{
+                Plan: {
+                    Name: "חבילת בסיס",
+                    MonthlyFee: 57
+                },
+
+            }    ,        "pro":{
+                Plan: {
+                    Name: "חבילה מורחבת",
+                    MonthlyFee: 92
+                },
+
+            }
+        };
+        function takePayment(selected){
+            var config = products[selected];
+            var paymentConfig = Object.assign({}, config, userConfig);
+            var paymentFrame = document.getElementById("payment");
+            var transilaUrl = "https://direct.tranzila.com/redox/iframenew.php";
+            var query = buildQuery(paymentConfig);
+            console.log("PAU", paymentConfig, query);
+            paymentFrame.src = transilaUrl + "?" + query;
+        }
+        </script>
+    </head>
+    <body>
+
+        <h1>REDOX</h1>
+        <button type="button" onclick="takePayment('basic')">
+            BASIC PLAN
+        </button>
+        <button type="button" onclick="takePayment('pro')">
+                PRO PLAN
+            </button>
+        <iframe id="payment" style="border:0;width:100%;height:100%" src=""></iframe>
+
+
+    </body>
+</html>
