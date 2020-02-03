@@ -29,7 +29,8 @@ namespace Redox.Payments
             
             var result = await Task.FromResult((ActionResult)new ContentResult()
             {
-                Content= $"<h1 color='green'>ACCEPTED!</h1>Response:<ul>{items}",
+                Content= $"<html><body><h1 color='green'>ACCEPTED!</h1>Response:<ul>{items}</ul></body></html>",
+                
                 StatusCode = (int)HttpStatusCode.OK,
                 ContentType = "text/html"
             });

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -44,20 +45,27 @@ namespace Redox.Payments
             foreach(var item in req.Form){
                 items.Append($"<li>{item.Key}: {item.Value}</li>");
             }
-            var result = await Task.FromResult((ActionResult)new OkObjectResult($"<h1 color='red'>REJECTED!</h1>Response:<ul>{items}"));
-return result;
-        //     string name = req.Query["contact"];
-        // if (string.IsNullOrEmpty(name)){
-        //     name = req.Form["contact"];
-        // }
 
-        //     string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        //     dynamic data = JsonConvert.DeserializeObject(requestBody);
-        //     name = name ?? data?.name;
 
-        //     return name != null
-        //         ? (ActionResult)new OkObjectResult($"Hello, {name}")
-        //         : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            var result = await Task.FromResult((ActionResult)new ContentResult()
+            {
+                Content = $"<html><body><h1 color='red'>REJECTED!</h1>Response:<ul>{items}</ul></body></html>",
+                StatusCode = (int)HttpStatusCode.OK,
+                ContentType = "text/html"
+            });
+            return result;
+            //     string name = req.Query["contact"];
+            // if (string.IsNullOrEmpty(name)){
+            //     name = req.Form["contact"];
+            // }
+
+            //     string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            //     dynamic data = JsonConvert.DeserializeObject(requestBody);
+            //     name = name ?? data?.name;
+
+            //     return name != null
+            //         ? (ActionResult)new OkObjectResult($"Hello, {name}")
+            //         : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
         }
     }
 }
