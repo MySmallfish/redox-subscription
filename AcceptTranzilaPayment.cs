@@ -83,11 +83,12 @@ return result;
                 UserId = int.Parse(properties["userid"]),
                 TenantId = int.Parse(properties["tenantid"]),
                 AccountId = int.Parse(properties["accountid"]),
+                Agents = int.Parse(properties["agents"]),
                 Token = properties["TranzilaTK"],
                 ExpiryMonth = properties["expmonth"],
                 ExpiryYear = properties["expyear"],
                 ReferenceId = properties["ConfirmationCode"],
-                Amount = double.Parse(properties["sum"])
+                Amount = properties["sum"]
             };
             var json = JsonConvert.SerializeObject(payment);
             log.LogInformation($"Message Content: {json}.");

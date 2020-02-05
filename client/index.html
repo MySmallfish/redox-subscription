@@ -43,9 +43,9 @@ iframe{
             //"sum=57&userId=1&tenantId=1&currency=1&contact=yairyair&lang=il&recur_transaction=4"
             var query = [];
             add(query, "lang", "il");
-            add(query, "success_url_address", baseUrl + "/api/AcceptTranzilaPayment");
-            add(query, "fail_url_address", baseUrl + "/api/RejectTranzilaPayment");
-            add(query, "notify_url_address", baseUrl + "/api/NotifyTranzilaPayment");
+            add(query, "success_url_address", baseUrl + "/api/Accept");
+            add(query, "fail_url_address", baseUrl + "/api/Reject");
+            add(query, "notify_url_address", baseUrl + "/api/Notify");
 
             add(query, "sum", config.Payment.Amount);
             //add(query, "recur_transaction", "4_approved");

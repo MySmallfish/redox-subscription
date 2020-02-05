@@ -1,0 +1,6 @@
+﻿Response=000&o_tranmode=AK&pdsec=%D7%97%D7%91%D7%99%D7%9C%D7%94+%D7%91%D7%A1%D7%99%D7%A1%D7%99%D7%AA&userid=4180&tenantid=4077&expmonth=03&contact=%D7%A2%D7%9E%D7%99%D7%97%D7%99+%D7%91%D7%96%D7%A7&email=amihai.bazak%40gmail.com&currency=1&expyear=21&supplier=redox&sum=57&benid=v6m9popo5m4mak1t8rrm3qfrb0&o_cred_type=&lang=il&ccard=&accountid=127&phone=0528018814&fail_url_address=http%3A%2F%2Flocalhost%3A7071%2Fapi%2FRejectTranzilaPayment&agents=1&success_url_address=http%3A%2F%2Flocalhost%3A7071%2Fapi%2FAcceptTranzilaPayment&o_npay=&notify_url_address=http%3A%2F%2Flocalhost%3A7071%2Fapi%2FNotifyTranzilaPayment&tranmode=AK&ConfirmationCode=0095020&cardtype=2&cardissuer=6&cardaquirer=2&index=9&Tempref=02001001&TranzilaTK=l268cbe43d3ff9c6949&ccno=
+JSON:
+-----
+
+{"UserId":4180,"TenantId":4077,"AccountId":127,"Token":"l268cbe43d3ff9c6949","ExpiryMonth":"03","ExpiryYear":"21","ReferenceId":"0095020","Amount":57.0}
+433
