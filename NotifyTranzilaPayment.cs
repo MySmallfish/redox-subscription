@@ -60,7 +60,7 @@ namespace Redox.Payments
         private static async Task PostPaymentMessage(Dictionary<string, string> properties, ILogger log)
         {
             var connectionString =
-                "Endpoint=sb://simplylog-eu.servicebus.windows.net/;SharedAccessKeyName=tranzila-redox-payment;SharedAccessKey=+Jf1uZEO5qg6y9mrr2jQ7iV0/3I/DBWUC+ITKqz8j+8=;EntityPath=redox-payments";
+                "PaymentsQueueConnectionString";
             var queueName = "redox-payments";
             log.LogInformation($"Posting message to '{queueName}'.");
             var json = JsonConvert.SerializeObject(properties);

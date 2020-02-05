@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Microsoft.Azure.ServiceBus;
+using Microsoft.Extensions.Configuration;
 
 namespace Redox.Payments
 {
@@ -22,20 +23,31 @@ namespace Redox.Payments
         
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+            ILogger log, ExecutionContext context)
         {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(context.FunctionAppDirectory)
+                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
             log.LogInformation("C# HTTP trigger function processed a request.");
             var items = new StringBuilder();
             var properties = new Dictionary<string,string>();
+            foreach (var item in req.Form)
+            {
 
-            await PostPaymentMessage(properties, log);
-
-
-            foreach (var item in req.Form){
-                items.Append($"<li>{item.Key}: {item.Value}</li>");
                 properties[item.Key] = item.Value;
             }
 
+
+            await PostPaymentMessage(properties, log, config);
+
+
+            foreach (var item in properties)
+            {
+
+                items.Append($"<li>{item.Key}: {item.Value}</li>");
+            }
             //outputMessage
 
             var result = await Task.FromResult((ActionResult)new ContentResult()
@@ -60,19 +72,32 @@ return result;
         //         : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
         }
 
-        private static async Task PostPaymentMessage(Dictionary<string, string> properties, ILogger log)
+        private static async Task PostPaymentMessage(Dictionary<string, string> properties, ILogger log, IConfiguration config)
         {
-            var connectionString =
-                "Endpoint=sb://simplylog-eu.servicebus.windows.net/;SharedAccessKeyName=tranzila-redox-payment;SharedAccessKey=+Jf1uZEO5qg6y9mrr2jQ7iV0/3I/DBWUC+ITKqz8j+8=";
+
+            var connectionString = config["PaymentsQueueConnectionString"];
             var queueName = "redox-payments";
             log.LogInformation($"Posting message to '{queueName}'.");
-            var json = JsonConvert.SerializeObject(properties);
+            var payment = new
+            {
+                UserId = int.Parse(properties["userid"]),
+                TenantId = int.Parse(properties["tenantid"]),
+                AccountId = int.Parse(properties["accountid"]),
+                Token = properties["TranzilaTK"],
+                ExpiryMonth = properties["expmonth"],
+                ExpiryYear = properties["expyear"],
+                ReferenceId = properties["ConfirmationCode"],
+                Amount = double.Parse(properties["sum"])
+            };
+            var json = JsonConvert.SerializeObject(payment);
             log.LogInformation($"Message Content: {json}.");
             var encoded = Encoding.UTF8.GetBytes(json);
             var message = new Message(encoded);
             var queueClient = new QueueClient(connectionString, queueName);
             
             await queueClient.SendAsync(message);
+
+
         }
     }
 }
