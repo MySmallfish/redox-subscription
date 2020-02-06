@@ -114,7 +114,7 @@ namespace payment.greeninvoice
                             }
                             else
                             {
-                                throw new ArgumentException("Unable to Create Customer");
+                                throw new ArgumentException($"Unable to Create Customer: Code: {error.ErrorCode}, Message: {error.ErrorMessage}");
                             }
                         }
                     }

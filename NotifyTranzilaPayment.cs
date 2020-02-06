@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using payment;
 
 namespace Redox.Payments
 {
@@ -19,8 +21,17 @@ namespace Redox.Payments
         
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+            ILogger log, ExecutionContext context)
         {
+
+            var config = new ConfigurationBuilder()
+                .SetBasePath(context.FunctionAppDirectory)
+                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
+            var json =
+                "{\"BillingId\":444,\"Items\":[{\"Description\":\"ברוקר מורחב\",\"Sku\":\"14\",\"Price\":49.0,\"Quantity\":2}],\"Account\":{\"Id\":152,\"Name\":\"בייס אחזקות בע\\\"מ\",\"TaxId\":\"514792456\",\"Tenant\":null,\"User\":null},\"Tenant\":{\"Id\":3655,\"Name\":\"מפתח העיר אריאל\",\"Address\":\"אורי בראון 6\",\"City\":\"אריאל\",\"AdminEmail\":\"elikob15@gmail.com\"},\"User\":{\"ManagementRegion\":null,\"CountDealsTotal\":0,\"CountExelosiveTotal\":0,\"CountSignTotal\":0,\"UserId\":3712,\"FullName\":\"אליקו בן עיון\",\"Email\":\"elikob15@gmail.com\",\"Phone\":\"0544595821\"},\"Description\":\"מנוי REDOX - החתמה דיגיטלית למתווכים\",\"Payment\":{\"PaymentDate\":\"2020-02-06T01:25:08.59Z\",\"Amount\":115.0,\"Agents\":2,\"CardNum\":\"6255\"}}";
+            await InvoiceCustomer.ProcessInvoice(json, log,config );
             log.LogInformation("C# HTTP trigger function processed a request.");
             var items = new StringBuilder();
             var properties = new Dictionary<string,string>();

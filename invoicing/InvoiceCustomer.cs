@@ -26,6 +26,12 @@ namespace payment
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
+            var response = await ProcessInvoice(myQueueItem, log, config);
+            await output.AddAsync(response);
+        }
+
+        public static async Task<InvoiceResponse> ProcessInvoice(string myQueueItem, ILogger log, IConfigurationRoot config)
+        {
             var paymentRequest = JsonConvert.DeserializeObject<InvoiceRequest>(myQueueItem);
             var requestCustomer = MapToCustomer(paymentRequest);
 
@@ -38,8 +44,7 @@ namespace payment
                 var customer = await greenInvoiceClient.SaveCustomer(requestCustomer);
                 var invoice = CreateInvoiceReceiptRequest(customer, paymentRequest);
 
-                response = await greenInvoiceClient.AddInvoice( invoice);
-                
+                response = await greenInvoiceClient.AddInvoice(invoice);
             }
             catch (Exception anyException)
             {
@@ -50,7 +55,7 @@ namespace payment
             response.BillingId = paymentRequest.BillingId;
             response.TenantId = paymentRequest.Tenant.Id;
             response.UserId = paymentRequest.User.UserId;
-            await output.AddAsync(response);
+            return response;
         }
 
         private static Customer MapToCustomer(InvoiceRequest paymentRequest)
@@ -70,9 +75,9 @@ namespace payment
                 Phone = paymentRequest.User.Phone,
                 TaxId = paymentRequest.Account.TaxId
             };
-#if DEBUG
-            requestCustomer.Emails = new[] { "yair@redox.co.il" };
-#endif
+//#if DEBUG
+//            requestCustomer.Emails = new[] { "yair@redox.co.il" };
+//#endif
 
             return requestCustomer;
         }
