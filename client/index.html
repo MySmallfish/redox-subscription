@@ -20,7 +20,7 @@
 iframe{
     height:800px;
 }
-        ol {
+       .container > ol {
             width: 50%;
             margin: auto;
             min-height: 1024px;;
@@ -30,6 +30,14 @@ iframe{
             display: grid;
             grid-template-columns: 8fr 2fr;
             margin: 8px auto;
+            border: solid 1px #BBB;
+border-radius: 16px;;
+        }
+        li button{
+            grid-column: span 2;
+            font-size: 16pt;
+            border-radius: 16px;
+            background-color: cornflowerblue;
         }
     </style>
     REdox Payments
@@ -96,14 +104,20 @@ iframe{
 
 setTimeout(function(){
         var janBilling =         [{ "Account": { "Id": 118, "Name": "ג'י פי נכסים" }, "Tenant": { "Id": 3808, "Name": "ג'י פי נכסים" }, "User": { "UserId": 3883, "FullName": "גיא פלד", "Email": "guyrealty@gmail.com", "Phone": "0547488803" }, "Payment": { "Amount": 57 }, "Plan": { "Id": 1, "Name": "חבילה בסיסית" } }, { "Account": { "Id": 177, "Name": "פלשין שרותי תיווך" }, "Tenant": { "Id": 2166, "Name": "פלשין שרותי תיווך" }, "User": { "UserId": 2179, "FullName": "מיכל", "Email": "flashin.m@gmail.com", "Phone": "0528233181" }, "Payment": { "Amount": 81 }, "Plan": { "Id": 3, "Name": "מורחבת בהנחה" } }, { "Account": { "Id": 190, "Name": "עמית גולדמן(נדל\"ן גולדמן)" }, "Tenant": { "Id": 4240, "Name": "עמית גולדמן(נדל\"ן גולדמן)" }, "User": { "UserId": 4351, "FullName": "עמית גולדמן(נדל\"ן גולדמן) נכסים השווים זהב", "Email": "amitgoldmen@gmail.com", "Phone": "0523171818" }, "Payment": { "Amount": 57 }, "Plan": { "Id": 14, "Name": "ברוקר מורחב" } }];
-        var febBilling =[{"Account":{"Id":177,"Name":"פלשין שרותי תיווך"},"Tenant":{"Id":2166,"Name":"פלשין שרותי תיווך"},"User":{"UserId":2179,"FullName":"מיכל","Email":"flashin.m@gmail.com","Phone":"0528233181"},"Payment":{"Amount":81,"Agents":1}},{"Account":{"Id":184,"Name":"אלי בן דוד"},"Tenant":{"Id":3499,"Name":"אליהו בן דוד - ייזום ושיווק פרוייקטים"},"User":{"UserId":3546,"FullName":"אלי בן דוד","Email":"elibend220@gmail.com","Phone":"0525729070"},"Payment":{"Amount":69,"Agents":1}},{"Account":{"Id":118,"Name":"ג'י פי נכסים"},"Tenant":{"Id":3808,"Name":"ג'י פי נכסים"},"User":{"UserId":3883,"FullName":"גיא פלד","Email":"guyrealty@gmail.com","Phone":"0547488803"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":194,"Name":"אייל אבני"},"Tenant":{"Id":4009,"Name":"אייל אבני"},"User":{"UserId":4105,"FullName":"אייל אבני","Email":"avnieyal@gmail.com","Phone":"0544950863"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":170,"Name":"איציק ברנט"},"Tenant":{"Id":4035,"Name":"איציק ברנט"},"User":{"UserId":4136,"FullName":"איציק ברנט","Email":"itzikbernat@gmail.com","Phone":"0584482760"},"Payment":{"Amount":81,"Agents":1}},{"Account":{"Id":186,"Name":"פתרונות נדל\"ן"},"Tenant":{"Id":4114,"Name":"פתרונות נדל\"ן"},"User":{"UserId":4217,"FullName":"מקס קונר","Email":"max.konner@gmail.com","Phone":"0525870145"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":129,"Name":"בארי נכסים"},"Tenant":{"Id":4169,"Name":"בארי נכסים"},"User":{"UserId":4275,"FullName":"דניאל בארי","Email":"daniel@beeri-nadlan.co.il","Phone":"0509334600"},"Payment":{"Amount":126,"Agents":2}},{"Account":{"Id":150,"Name":"לורנה עזריה"},"Tenant":{"Id":4198,"Name":"לורנה עזריה"},"User":{"UserId":4309,"FullName":"לורנה עזריה","Email":"lorena.azaria@gmail.com","Phone":"0546493848"},"Payment":{"Amount":46,"Agents":1}},{"Account":{"Id":155,"Name":"רמי מזרחי"},"Tenant":{"Id":4229,"Name":"רמי מזרחי"},"User":{"UserId":4340,"FullName":"רמי מזרחי","Email":"infinitynadlan1@gmail.com","Phone":"0529533379"},"Payment":{"Amount":115,"Agents":2}},{"Account":{"Id":190,"Name":"עמית גולדמן(נדל\"ן גולדמן)"},"Tenant":{"Id":4240,"Name":"עמית גולדמן(נדל\"ן גולדמן)"},"User":{"UserId":4351,"FullName":"עמית גולדמן(נדל\"ן גולדמן) נכסים השווים זהב","Email":"amitgoldmen@gmail.com","Phone":"0523171818"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":197,"Name":"זמיר נדל\"ן"},"Tenant":{"Id":4242,"Name":"זמיר נדל\"ן"},"User":{"UserId":4353,"FullName":"יוסי זמיר","Email":"zamiryos85@gmail.com","Phone":"0522816155"},"Payment":{"Amount":183,"Agents":4}},{"Account":{"Id":132,"Name":"קורנפלד נכסים"},"Tenant":{"Id":4253,"Name":"קורנפלד נכסים"},"User":{"UserId":4364,"FullName":"עידן קורנפלד","Email":"korenfld@gmail.com","Phone":"0504269331"},"Payment":{"Amount":206,"Agents":4}},{"Account":{"Id":189,"Name":"ארז מרקוביץ"},"Tenant":{"Id":4266,"Name":"ארז מרקוביץ"},"User":{"UserId":4377,"FullName":"ארז מרקוביץ","Email":"erez008@gmail.com","Phone":"0548383333"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":168,"Name":"ליאת קנזי"},"Tenant":{"Id":4290,"Name":"ליאת קנזי"},"User":{"UserId":4403,"FullName":"ליאת קנזי","Email":"kenzinadlan@gmail.com","Phone":"0502533315"},"Payment":{"Amount":229,"Agents":5}},{"Account":{"Id":161,"Name":"גיל ששון"},"Tenant":{"Id":4291,"Name":"גיל ששון שיווק נדל\"ן"},"User":{"UserId":4404,"FullName":"גיל ששון","Email":"gssnadlan@gmail.com","Phone":"054-2335397"},"Payment":{"Amount":172,"Agents":3}},{"Account":{"Id":136,"Name":"אור נדל''ן רמת השרון"},"Tenant":{"Id":4295,"Name":"אור נדל''ן רמת השרון"},"User":{"UserId":4408,"FullName":"יובל ויסוסר ברוקר אור נדל''ן רמת השרון","Email":"juvalfw@gmail.com","Phone":"0505726915"},"Payment":{"Amount":115,"Agents":2}},{"Account":{"Id":169,"Name":"גבריאל שאולוב MG  נדל\"ן"},"Tenant":{"Id":4296,"Name":"גבריאל שאולוב MG  נדל\"ן"},"User":{"UserId":4409,"FullName":"גבריאל שאולוב MG  נדל\"ן","Email":"mg.s.nadlan@gmail.com","Phone":"0542141278"},"Payment":{"Amount":172,"Agents":3}},{"Account":{"Id":145,"Name":"לידרס סוכנות נדלן הרצליה"},"Tenant":{"Id":4464,"Name":"לידרס סוכנות נדלן הרצליה"},"User":{"UserId":4583,"FullName":"יניב אדרי","Email":"group@a-leaders.co.il","Phone":"0523338375"},"Payment":{"Amount":456,"Agents":10}},{"Account":{"Id":195,"Name":"ארז שיר"},"Tenant":{"Id":4474,"Name":"ארז שיר"},"User":{"UserId":4595,"FullName":"ארז שיר","Email":"shirnadlan@gmail.com","Phone":"0527471747"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":163,"Name":"ליאור שקד DIRECT"},"Tenant":{"Id":5515,"Name":"Direct Real Estate"},"User":{"UserId":5636,"FullName":"ליאור שקד","Email":"direct.nadlan@gmail.com","Phone":"0527567803"},"Payment":{"Amount":81,"Agents":1}},{"Account":{"Id":147,"Name":"מרכז הנכסים merkaz hanechasim"},"Tenant":{"Id":5532,"Name":"מרכז הנכסים merkaz hanechasim"},"User":{"UserId":5653,"FullName":"מרכז הנכסים merkaz hanechasim","Email":"merkazn1@gmail.com","Phone":"0503077441"},"Payment":{"Amount":730,"Agents":17}},{"Account":{"Id":158,"Name":"Moshe Meidan"},"Tenant":{"Id":5628,"Name":"Moshe Meidan"},"User":{"UserId":5761,"FullName":"Moshe Meidan","Email":"annameidan@gmail.com","Phone":"0549987773"},"Payment":{"Amount":92,"Agents":1}},{"Account":{"Id":162,"Name":"מאור נכסים"},"Tenant":{"Id":5633,"Name":"מאור נכסים"},"User":{"UserId":5767,"FullName":"נועם מאור","Email":"noga.haim1@gmail.com","Phone":"0525602186"},"Payment":{"Amount":411,"Agents":9}},{"Account":{"Id":171,"Name":"בית קל נדל\"ן בע\"מ"},"Tenant":{"Id":5766,"Name":"בית קל נדל\"ן בע\"מ"},"User":{"UserId":5772,"FullName":"אהרן פרל","Email":"aaroneperl@gmail.com","Phone":"0585352120"},"Payment":{"Amount":276,"Agents":4}},{"Account":{"Id":176,"Name":"Cityzen- שיווק נכסים"},"Tenant":{"Id":5646,"Name":"Cityzen- שיווק נכסים"},"User":{"UserId":5780,"FullName":"ברק דבש","Email":"barakdvash@gmail.com","Phone":"0504433771"},"Payment":{"Amount":183,"Agents":4}},{"Account":{"Id":160,"Name":"ורד בוטבול"},"Tenant":{"Id":5647,"Name":"ורד בוטבול"},"User":{"UserId":5781,"FullName":"ורד בוטבול","Email":"nb.vered@gmail.com","Phone":"0544863336"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":171,"Name":"בית קל נדל\"ן בע\"מ"},"Tenant":{"Id":5766,"Name":"בית קל נדל\"ן בע\"מ"},"User":{"UserId":5918,"FullName":"Ayala Freeman","Email":"ayalafreeman76@gmail.com","Phone":"0524442675"},"Payment":{"Amount":276,"Agents":4}},{"Account":{"Id":183,"Name":"ערן בן אבו"},"Tenant":{"Id":5773,"Name":"ערן בן אבו"},"User":{"UserId":5925,"FullName":"ערן בן אבו","Email":"eranben111@gmail.com","Phone":"0547404584"},"Payment":{"Amount":69,"Agents":1}},{"Account":{"Id":172,"Name":"סופי ימיני"},"Tenant":{"Id":5784,"Name":"סופי ימיני"},"User":{"UserId":5937,"FullName":"סופי ימיני","Email":"sophiey282828@gmail.com","Phone":"0505338850"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":174,"Name":"דניאל מויאל"},"Tenant":{"Id":5792,"Name":"משנה מקום"},"User":{"UserId":5945,"FullName":"דניאל מויאל","Email":"mema.realestate@gmail.com","Phone":"0533341053"},"Payment":{"Amount":81,"Agents":1}},{"Account":{"Id":173,"Name":"izik fa"},"Tenant":{"Id":5793,"Name":"izik fa"},"User":{"UserId":5946,"FullName":"izik fa","Email":"fa.izikfa@gmail.com","Phone":"0547692091"},"Payment":{"Amount":81,"Agents":1}},{"Account":{"Id":175,"Name":"רילטי אקזקיוטיב"},"Tenant":{"Id":5795,"Name":"רילטי אקזקיוטיב"},"User":{"UserId":5948,"FullName":"רון הורוביץ","Email":"ron.rexe@gmail.com","Phone":"054-9105380"},"Payment":{"Amount":344,"Agents":6}},{"Account":{"Id":179,"Name":"ערן וכסלר - תיווך ושיווק נכסים"},"Tenant":{"Id":5824,"Name":"ערן וכסלר - תיווך ושיווק נכסים"},"User":{"UserId":5984,"FullName":"ערן וכסלר","Email":"eranvex@gmail.com","Phone":"0506343834"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":182,"Name":"nest"},"Tenant":{"Id":5852,"Name":"גלית טלי"},"User":{"UserId":6014,"FullName":"גלית טלי","Email":"nestre2729@gmail.com","Phone":"0527245519"},"Payment":{"Amount":69,"Agents":1}},{"Account":{"Id":185,"Name":"Lia Home"},"Tenant":{"Id":5885,"Name":"Lia Home"},"User":{"UserId":6049,"FullName":"ליה הוד","Email":"leahrealty18@gmail.com","Phone":"0587006787"},"Payment":{"Amount":150,"Agents":2}},{"Account":{"Id":188,"Name":"Itai Cohen"},"Tenant":{"Id":5869,"Name":"Itai Cohen"},"User":{"UserId":6059,"FullName":"איתי כהן ","Email":"itaicohen82@gmail.com","Phone":"0544925166"},"Payment":{"Amount":138,"Agents":2}},{"Account":{"Id":196,"Name":"שי ג'ורנו"},"Tenant":{"Id":5961,"Name":"שי ג'ורנו"},"User":{"UserId":6135,"FullName":"שי ג'ורנו","Email":"jorno777@gmail.com","Phone":"0538821197"},"Payment":{"Amount":172,"Agents":3}}]
+        var febBilling =[{"Account":{"Id":177,"Name":"פלשין שרותי תיווך"},"Tenant":{"Id":2166,"Name":"פלשין שרותי תיווך"},"User":{"UserId":2179,"FullName":"מיכל","Email":"flashin.m@gmail.com","Phone":"0528233181"},"Payment":{"Amount":81,"Agents":1}},{"Account":{"Id":184,"Name":"אלי בן דוד"},"Tenant":{"Id":3499,"Name":"אליהו בן דוד - ייזום ושיווק פרוייקטים"},"User":{"UserId":3546,"FullName":"אלי בן דוד","Email":"elibend220@gmail.com","Phone":"0525729070"},"Payment":{"Amount":69,"Agents":1}},{"Account":{"Id":208,"Name":"קלר וויליאמס ראשונים"},"Tenant":{"Id":3519,"Name":"קלר וויליאמס ראשונים"},"User":{"UserId":3566,"FullName":"יחיאל עובדיה","Email":"yechielovadia@gmail.com","Phone":"0525571902"},"Payment":{"Amount":250,"Agents":10}},{"Account":{"Id":118,"Name":"ג'י פי נכסים"},"Tenant":{"Id":3808,"Name":"ג'י פי נכסים"},"User":{"UserId":3883,"FullName":"גיא פלד","Email":"guyrealty@gmail.com","Phone":"0547488803"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":181,"Name":"פאר נדל\"ן"},"Tenant":{"Id":3851,"Name":"פאר נדל\"ן"},"User":{"UserId":3934,"FullName":"רוני סקנדרני","Email":"peernadlan@gmail.com","Phone":"050-7706207"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":190,"Name":"עמית גולדמן(נדל\"ן גולדמן)"},"Tenant":{"Id":4240,"Name":"עמית גולדמן(נדל\"ן גולדמן)"},"User":{"UserId":4351,"FullName":"עמית גולדמן(נדל\"ן גולדמן) נכסים השווים זהב","Email":"amitgoldmen@gmail.com","Phone":"0523171818"},"Payment":{"Amount":57,"Agents":1}},{"Account":{"Id":156,"Name":"HouseStory Real Estat"},"Tenant":{"Id":4366,"Name":"HouseStory Real Estat"},"User":{"UserId":4482,"FullName":"Chen Carmi","Email":"chen@housestory-il.com","Phone":"0549219004"},"Payment":{"Amount":49,"Agents":1}},{"Account":{"Id":183,"Name":"ב.א נדלן אשקלון"},"Tenant":{"Id":5773,"Name":"ערן בן אבו"},"User":{"UserId":5925,"FullName":"ערן בן אבו","Email":"eranben111@gmail.com","Phone":"0547404584"},"Payment":{"Amount":69,"Agents":1}}]
         
         var billing = febBilling;
         var host = document.getElementById("container");
 
         function bill() {
+            
             var paymentConfig = JSON.parse(this.dataset["config"]);
             if (paymentConfig) {
+                var selected = document.getElementById("selected");
+                if (selected.childNodes[0]){
+                this.parentNode.parentNode.appendChild(selected.childNodes[0]);
+                }
+                selected.appendChild(this.parentNode);
                 var paymentFrame = document.getElementById("payment");
                 var transilaUrl = "https://direct.tranzila.com/redox/iframenew.php";
 
@@ -117,7 +131,7 @@ setTimeout(function(){
         for (var i = 0; i < billing.length; i++) {
             var item = billing[i];
             var li = document.createElement("LI");
-            li.innerHTML = `${item.Account.Name} (${item.Account.Id}) -  ${item.Payment.Amount} - ${item.User.FullName} (${item.User.Phone})`;
+            li.innerHTML = `<b>${item.Account.Name}</b> (${item.Account.Id}) -  ${item.Payment.Amount} - ${item.User.FullName} (${item.User.Phone}) | ${item.Tenant.Id}`;
             var btn = document.createElement("BUTTON");
             btn.setAttribute("type", "button");
             btn.innerText = 'חייב';
@@ -144,7 +158,12 @@ setTimeout(function(){
     <h1>REDOX</h1>
     <div class="container">
         <ol id="container"></ol>
-        <iframe id="payment" style="border:0;width:100%;height:100%" src=""></iframe>
+        <div>
+            <h1>Paying Now:</h1>
+            <ol id="selected"></ol>
+        <iframe id="payment" style="border:0;width:100%;height:600px" src=""></iframe>
+    </div>
+
     </div>
 
 </body>

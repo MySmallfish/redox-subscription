@@ -111,7 +111,8 @@ namespace payment
                 CatalogNum = item.Sku,
                 Description = item.Description,
                 Price = item.Price,
-                Quantity = item.Quantity
+                Quantity = item.Quantity,
+                VatType = item.VatIncluded ? 1 : 0
             };
             return result;
         }

@@ -26,14 +26,6 @@ namespace payment.greeninvoice
         }
       
 
-        //,
-        //"name":"יאיר כהן",
-        //"emails":["yair@redox.co.il"],
-        //"taxId":"515057735",
-        //"city":"פתח תקווה",
-        //"address":"גליצנשטיין 3",
-        //"phone":"0525239030"    
-
         private static string m_token;
         public async Task<T> WithClient<T>(Func<HttpClient, Task<T>> run)
         {
