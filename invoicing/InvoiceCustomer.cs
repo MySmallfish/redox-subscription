@@ -18,7 +18,7 @@ namespace payment
 
 
         [FunctionName("InvoiceCustomer")]
-        public static async Task Run([ServiceBusTrigger("redox-invoices", Connection = "InvoicingQueueConnectionString")]string myQueueItem, [ServiceBus("redox-invoices-response", Connection = "InvoicingQueueConnectionString")]IAsyncCollector<InvoiceResponse> output, ILogger log, ExecutionContext context)
+        public static async Task Run([ServiceBusTrigger("%InvoiceQueueName%", Connection = "InvoicingQueueConnectionString")]string myQueueItem, [ServiceBus("%InvoiceResponseQueueName%", Connection = "InvoicingQueueConnectionString")]IAsyncCollector<InvoiceResponse> output, ILogger log, ExecutionContext context)
         {
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
             var config = new ConfigurationBuilder()
@@ -89,6 +89,7 @@ namespace payment
             {
                 Client = customer,
                 Description = paymentRequest.Description,
+                Remarks = paymentRequest.Comments,
                 Income = paymentRequest.Items.Select(MapToIncomeItem).ToArray(),
                 Attachment = true,
                 Payment = new[]

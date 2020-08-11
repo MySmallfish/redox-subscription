@@ -88,32 +88,32 @@ namespace Redox.Payments
             ILogger log, ExecutionContext context)
         {
 
-            var config = new ConfigurationBuilder()
-                .SetBasePath(context.FunctionAppDirectory)
-                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .Build();
-            var properties = new Dictionary<string, string>();
-            foreach (var item in req.Form)
-            {
-                properties[item.Key] = item.Value;
-            }
-            log.LogInformation($"Accepted payment notification. Parameters: {JsonConvert.SerializeObject(properties)}");
+            //var config = new ConfigurationBuilder()
+            //    .SetBasePath(context.FunctionAppDirectory)
+            //    .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+            //    .AddEnvironmentVariables()
+            //    .Build();
+            //var properties = new Dictionary<string, string>();
+            //foreach (var item in req.Form)
+            //{
+            //    properties[item.Key] = item.Value;
+            //}
+            //log.LogInformation($"Accepted payment notification. Parameters: {JsonConvert.SerializeObject(properties)}");
 
-            try
-            {
-                var storageAccount = CreateStorageAccountFromConnectionString(config["NotifiedPaymentsLogConnectionString"]);
-                var paymentRecord = new PaymentRecord(properties);
-                var tableClient = storageAccount.CreateCloudTableClient();
-                var table = tableClient.GetTableReference(config["NotifiedTransactionsLogTableName"]);
-                await InsertOrMergeEntityAsync(table, paymentRecord);
+            //try
+            //{
+            //    var storageAccount = CreateStorageAccountFromConnectionString(config["NotifiedPaymentsLogConnectionString"]);
+            //    var paymentRecord = new PaymentRecord(properties);
+            //    var tableClient = storageAccount.CreateCloudTableClient();
+            //    var table = tableClient.GetTableReference(config["NotifiedTransactionsLogTableName"]);
+            //    await InsertOrMergeEntityAsync(table, paymentRecord);
 
-            }
-            catch (Exception anyException)
-            {
-                log.LogError(anyException, "Unable to store payment record.");
-                throw;
-            }
+            //}
+            //catch (Exception anyException)
+            //{
+            //    log.LogError(anyException, "Unable to store payment record.");
+            //    throw;
+            //}
        
             var result = await Task.FromResult((ActionResult) new OkResult());
             return result;

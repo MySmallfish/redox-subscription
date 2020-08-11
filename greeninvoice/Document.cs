@@ -15,6 +15,7 @@
         public bool Rounding { get; set; } = true;
         public Customer Client { get; set; }
         public string Description { get; set; }
+        public string Remarks { get; set; }
 
         public IncomeItem[] Income { get; set; }
         public PaymentItem[] Payment { get; set; }

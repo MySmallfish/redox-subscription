@@ -76,7 +76,7 @@ return result;
         {
 
             var connectionString = config["PaymentsQueueConnectionString"];
-            var queueName = "redox-payments";
+            var queueName = config["AcceptedPaymentsQueueName"];
             log.LogInformation($"Posting message to '{queueName}'.");
             var payment = new
             {

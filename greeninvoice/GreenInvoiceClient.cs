@@ -26,7 +26,7 @@ namespace payment.greeninvoice
         }
       
 
-        private static string m_token;
+        private  string m_token;
         public async Task<T> WithClient<T>(Func<HttpClient, Task<T>> run)
         {
             using (var httpClient = new HttpClient { BaseAddress = ApiUrl })
