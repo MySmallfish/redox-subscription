@@ -88,6 +88,7 @@ namespace payment
             var invoice = new InvoiceReceipt
             {
                 Client = customer,
+                
                 Description = paymentRequest.Description,
                 Remarks = paymentRequest.Comments,
                 Income = paymentRequest.Items.Select(MapToIncomeItem).ToArray(),

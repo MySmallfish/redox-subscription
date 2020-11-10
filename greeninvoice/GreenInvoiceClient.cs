@@ -98,11 +98,13 @@ namespace payment.greeninvoice
                             var error = await FromJson<ErrorDetails>(response.Content);
                             if (error.ErrorCode == 1010)
                             {
-                                return new Customer()
-                                {
-                                    Id = error.ErrorMessage
+                                customer.Id = error.ErrorMessage;
+                                return customer;
+                                //    new Customer()
+                                //{
+                                //    Id = error.ErrorMessage
 
-                                };
+                                //};
                             }
                             else
                             {
