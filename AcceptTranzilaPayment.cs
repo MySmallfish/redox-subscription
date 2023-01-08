@@ -80,6 +80,7 @@ return result;
             log.LogInformation($"Posting message to '{queueName}'.");
             var payment = new
             {
+                BillingId = int.Parse(properties["billingid"]),
                 UserId = int.Parse(properties["userid"]),
                 TenantId = int.Parse(properties["tenantid"]),
                 AccountId = int.Parse(properties["accountid"]),

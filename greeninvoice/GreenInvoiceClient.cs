@@ -78,8 +78,41 @@ namespace payment.greeninvoice
             return content;
         }
 
+        public async Task<Customer> Find(Customer customer)
+        {
+            var result = await WithClient(async client =>
+            {
+                using (var content = AsJson(new
+                {
+                    customer.Name,
+                    active = true
+                }))
+                {
+                    using (var response = await client.PostAsync("clients/search", content))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var customers = await FromJson<SearchRestuls<Customer>>(response.Content);
+                            return customers.Items.FirstOrDefault();
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            });
+
+            return result;
+        }
         public async Task<Customer> SaveCustomer(Customer customer)
         {
+            var existing = await Find(customer);
+            if (existing != null)
+            {
+                customer.Id = existing.Id;
+                return customer;
+            }
             var result = await WithClient(async client =>
             {
                 using (var content = AsJson(customer))
@@ -117,6 +150,7 @@ namespace payment.greeninvoice
             return result;
         }
 
+        public const string InvoiceReceipt = "320";
         private async Task<InvoiceResponse> CheckExistingDocument(InvoiceReceipt invoice)
         {
             var result = await WithClient(async client =>
@@ -124,9 +158,10 @@ namespace payment.greeninvoice
                 using (var content = AsJson(new
                 {
                     ClientId = invoice.Client.Id,
-                    FromDate = invoice.Payment[0].Date,
-                    ToDate = invoice.Payment[0].Date,
-                    Description = invoice.Description
+                    FromDate = DateTime.Parse(invoice.Payment[0].Date).AddDays(-7).ToString("yyyy-MM-dd"),
+                    ToDate = DateTime.Parse(invoice.Payment[0].Date).AddDays(7).ToString("yyyy-MM-dd"),
+                    Description = invoice.Description,
+                    Type=new[]{ InvoiceReceipt }
                 }))
                 {
                     using (var response = await client.PostAsync("documents/search", content))
@@ -148,6 +183,7 @@ namespace payment.greeninvoice
             return result;
         }
 
+ 
         public async Task<InvoiceResponse> AddInvoice(InvoiceReceipt receipt)
         {
             var result = await CheckExistingDocument(receipt);
@@ -167,7 +203,9 @@ namespace payment.greeninvoice
                             }
                             else
                             {
-                                throw new InvalidOperationException("Unable to create invoice");
+                                var error = await FromJson<ErrorDetails>(response.Content);
+                                throw new InvalidOperationException($"Unable to Create Invoice: Code: {error.ErrorCode}, Message: {error.ErrorMessage}");
+
                             }
                         }
                     }

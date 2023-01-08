@@ -2,28 +2,32 @@
 
 <head>
     <style>
-        html{
-            height:100%;
+        html {
+            height: 100%;
         }
+
         body {
             direction: rtl;
             height: 100%;
         }
 
-.container{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    height: 800px;
-    align-items: start;
-    align-content: start;
-}
-iframe{
-    height:800px;
-}
-       .container > ol {
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            height: 800px;
+            align-items: start;
+            align-content: start;
+        }
+
+        iframe {
+            height: 800px;
+        }
+
+        .container>ol {
             width: 50%;
             margin: auto;
-            min-height: 1024px;;
+            min-height: 1024px;
+            ;
         }
 
         li {
@@ -31,9 +35,11 @@ iframe{
             grid-template-columns: 8fr 2fr;
             margin: 8px auto;
             border: solid 1px #BBB;
-border-radius: 16px;;
+            border-radius: 16px;
+            ;
         }
-        li button{
+
+        li button {
             grid-column: span 2;
             font-size: 16pt;
             border-radius: 16px;
@@ -47,8 +53,8 @@ border-radius: 16px;;
         }
         function buildQuery(config) {
             var baseUrl = "http://localhost:7071";
-            
-           //baseUrl = "https://tranzila-redox-payment.azurewebsites.net"
+
+            //baseUrl = "https://tranzila-redox-payment.azurewebsites.net"
             //"sum=57&userId=1&tenantId=1&currency=1&contact=yairyair&lang=il&recur_transaction=4"
             var query = [];
             add(query, "lang", "il");
@@ -56,15 +62,16 @@ border-radius: 16px;;
             add(query, "fail_url_address", baseUrl + "/api/Reject");
             add(query, "notify_url_address", baseUrl + "/api/Notify");
 
-            add(query, "sum", config.Payment.Amount);
+            add(query, "sum", config.Payment?.Amount ?? config.Amount);
             //add(query, "recur_transaction", "4_approved");
             add(query, "tranmode", "AK");
             // add(query, "pdsec", config.Plan.Name);
 
-            add(query, "agents", config.Payment.Agents);
+            add(query, "agents", config.Payment?.Agents ?? config.Agents);
             add(query, "userid", config.User.UserId);
             add(query, "tenantid", config.Tenant.Id);
             add(query, "accountid", config.Account.Id);
+            add(query, "billingid", config.Id);
             add(query, "currency", 1);
             add(query, "contact", config.User.FullName);
             add(query, "email", config.User.Email)
@@ -103,46 +110,107 @@ border-radius: 16px;;
             }
         };
 
-setTimeout(function(){
-    
+        const Headers = {
+            "Authorization": "Basic Y2xpZW50LnJlZG94LmNvLmlsOntEQzI5ODE3NC1DODc3LTQzREUtQjFCNy01RjFEQTY1MEZCQjl9",
+            "x-redox-userid": "1"
+        };
+        const UrlBase = "http://localhost:9999/clientapi/";
 
-        var billing =[]
-        
-        var host = document.getElementById("container");
-
-        function bill() {
-            
-            var paymentConfig = JSON.parse(this.dataset["config"]);
-            if (paymentConfig) {
-                var selected = document.getElementById("selected");
-                if (selected.childNodes[0]){
-                this.parentNode.parentNode.appendChild(selected.childNodes[0]);
-                }
-                selected.appendChild(this.parentNode);
-                var paymentFrame = document.getElementById("payment");
-                var transilaUrl = "https://direct.tranzila.com/redox/iframenew.php";
-
-                var query = buildQuery(paymentConfig);
-
-                paymentFrame.src = transilaUrl + "?" + query;
-            }
+        function pay(id) {
+            return fetch(
+                `${UrlBase}PayBillingStatement?id=${id}`, {
+                headers: Headers,
+                method: "POST"
+            })
         }
+        function load() {
 
+            fetch(
+                `${UrlBase}BillingStatements?Status=0`, {
+                headers: Headers
+            }).then(response => {
+                response.json().then(result => {
+                    console.log("RESULT", result)
+                    const billing = result.Items;
+                    var host = document.getElementById("container");
+                    host.innerHTML = "";
+                    function bill() {
 
-        for (var i = 0; i < billing.length; i++) {
-            var item = billing[i];
-            var li = document.createElement("LI");
-            li.innerHTML = `<b>${item.Account.Name}</b> (${item.Account.Id}) -  ${item.Payment.Amount} - ${item.User.FullName} (${item.User.Phone}) | ${item.Tenant.Id}`;
-            var btn = document.createElement("BUTTON");
-            btn.setAttribute("type", "button");
-            btn.innerText = 'חייב';
-            btn.dataset["config"] = JSON.stringify(item);
-            btn.addEventListener("click", bill);
-            li.appendChild(btn);
-            host.appendChild(li);
+                        var paymentConfig = JSON.parse(this.dataset["config"]);
+                        if (paymentConfig) {
+                            var selected = document.getElementById("selected");
+                            if (selected.childNodes[0]) {
+                                this.parentNode.parentNode.appendChild(selected.childNodes[0]);
+                            }
+                            selected.appendChild(this.parentNode);
+                            var paymentFrame = document.getElementById("payment");
+                            var transilaUrl = "https://direct.tranzila.com/redox/iframenew.php";
+
+                            var query = buildQuery(paymentConfig);
+
+                            paymentFrame.src = transilaUrl + "?" + query;
+                        }
+                    }
+
+                    function billByToken() {
+                        var paymentConfig = JSON.parse(this.dataset["config"]);
+                        if (paymentConfig) {
+                            console.log("paymentConfig", paymentConfig.Id)
+                            pay(paymentConfig.Id).then(function () {
+                                console.log("SUCCESS!");
+                                load()
+                            }, function (e) {
+                                console.error("Failed! ", e);
+                            })
+                        }
+                    }
+
+                    var cellact = {
+                        "Amount": 468,
+                        "Account": {
+                          "Id": 0,
+                          "Name": "סלאקט תקשורת בע\"מ"
+
+                        },
+                        "Tenant": {
+                          "Id": 0,
+                          "Name": "סלאקט תקשורת בע\"מ"
+                        },
+                        "User": {
+                          "UserId": 6174,
+                          "FullName": "סלאקט תקשורת בע\"מ",
+                          "Email": "finance@cellact.com",
+                          "Phone": ""
+                        }
+                      }
+                    billing.splice(0, 0, cellact)
+                    console.log("bil", billing)
+                    for (var i = 0; i < billing.length; i++) {
+                        var item = billing[i];
+                        var li = document.createElement("LI");
+                        li.innerHTML = `<b>${item.Account.Name}</b> (${item.Account.Id}) -  <h4><u>${item.Payment?.Amount ?? item.Amount} שח</u> - ${item.Agents} סוכנים</h4> - ${item.User.FullName} (${item.User.Phone}) | ${item.Tenant.Id} - <i><b>${item.BillingMonth}/${item.BillingYear}</b></i>`;
+                        
+                        var btn = document.createElement("BUTTON");
+                        btn.setAttribute("type", "button");
+                        btn.innerText = 'חייב';
+                        btn.dataset["config"] = JSON.stringify(item);
+                        btn.addEventListener("click", bill);
+                        li.appendChild(btn);
+
+                        if (item.Account.PaymentToken) {
+                            btn = document.createElement("BUTTON");
+                            btn.setAttribute("type", "button");
+                            btn.innerText = 'חייב טוקן';
+                            btn.dataset["config"] = JSON.stringify(item);
+                            btn.addEventListener("click", billByToken);
+                            li.appendChild(btn);
+                        }
+                        host.appendChild(li);
+                    }
+
+                })
+            })
         }
-    }, 500)
-
         function takePayment(selected) {
             var config = products[selected];
             var paymentConfig = Object.assign({}, config, userConfig);
@@ -151,19 +219,21 @@ setTimeout(function(){
             var query = buildQuery(paymentConfig);
             console.log("PAU", paymentConfig, query);
             paymentFrame.src = transilaUrl + "?" + query;
+            setTimeout(load, 1000);
         }
     </script>
 </head>
 
-<body>
+<body onload="load()">
     <h1>REDOX</h1>
+    <button type="button" onclick="load()">REFRESH</button>
     <div class="container">
         <ol id="container" style="max-height:1200px; overflow:auto"></ol>
         <div>
             <h1>Paying Now:</h1>
             <ol id="selected"></ol>
-        <iframe id="payment" style="border:0;width:100%;height:600px" src=""></iframe>
-    </div>
+            <iframe id="payment" style="border:0;width:100%;height:600px" src=""></iframe>
+        </div>
 
     </div>
 

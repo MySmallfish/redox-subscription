@@ -18,7 +18,7 @@ namespace payment
 
 
         [FunctionName("InvoiceCustomer")]
-        public static async Task Run([ServiceBusTrigger("%InvoiceQueueName%", Connection = "InvoicingQueueConnectionString")]string myQueueItem, [ServiceBus("%InvoiceResponseQueueName%", Connection = "InvoicingQueueConnectionString")]IAsyncCollector<InvoiceResponse> output, ILogger log, ExecutionContext context)
+        public static async Task Run([ServiceBusTrigger("%InvoiceQueueName%", Connection = "InvoicingQueueConnectionString")] string myQueueItem, [ServiceBus("%InvoiceResponseQueueName%", Connection = "InvoicingQueueConnectionString")] IAsyncCollector<InvoiceResponse> output, ILogger log, ExecutionContext context)
         {
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
             var config = new ConfigurationBuilder()
@@ -26,8 +26,12 @@ namespace payment
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
-            var response = await ProcessInvoice(myQueueItem, log, config);
-            await output.AddAsync(response);
+            var stopProcessing = false;
+            if (!stopProcessing)
+            {
+                var response = await ProcessInvoice(myQueueItem, log, config);
+                await output.AddAsync(response);
+            }
         }
 
         public static async Task<InvoiceResponse> ProcessInvoice(string myQueueItem, ILogger log, IConfigurationRoot config)
@@ -52,6 +56,7 @@ namespace payment
                 response.Error = anyException.ToString();
             }
 
+
             response.BillingId = paymentRequest.BillingId;
             response.TenantId = paymentRequest.Tenant.Id;
             response.UserId = paymentRequest.User.UserId;
@@ -70,14 +75,14 @@ namespace payment
                     paymentRequest.User.Email,
                     paymentRequest.Tenant.AdminEmail
                 },
-                Labels = new[] {"RedoxApp", "Azure"},
+                Labels = new[] { "RedoxApp", "Azure" },
                 Name = paymentRequest.Account.Name,
                 Phone = paymentRequest.User.Phone,
                 TaxId = paymentRequest.Account.TaxId
             };
-//#if DEBUG
-//            requestCustomer.Emails = new[] { "yair@redox.co.il" };
-//#endif
+            //#if DEBUG
+            //            requestCustomer.Emails = new[] { "yair@redox.co.il" };
+            //#endif
 
             return requestCustomer;
         }
@@ -88,7 +93,7 @@ namespace payment
             var invoice = new InvoiceReceipt
             {
                 Client = customer,
-                
+
                 Description = paymentRequest.Description,
                 Remarks = paymentRequest.Comments,
                 Income = paymentRequest.Items.Select(MapToIncomeItem).ToArray(),
