@@ -1,5 +1,6 @@
 ﻿namespace payment.greeninvoice
 {
+
     public class InvoiceResponse
     {
         public int UserId { get; set; }

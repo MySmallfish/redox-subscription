@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -124,6 +125,7 @@ namespace payment.greeninvoice
 
 
                             var receivedCustomer = await FromJson<Customer>(response.Content);
+                            Thread.Sleep(2000); // let api do its thing...
                             return receivedCustomer;
                         }
                         else

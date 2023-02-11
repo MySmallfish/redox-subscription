@@ -1,14 +1,12 @@
 using System;
-using System.Net.Http;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System.Linq;
-using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
+using Microsoft.Azure.Functions.Worker;
 using payment.greeninvoice;
 
 namespace payment
@@ -17,26 +15,69 @@ namespace payment
     {
 
 
-        [FunctionName("InvoiceCustomer")]
-        public static async Task Run([ServiceBusTrigger("%InvoiceQueueName%", Connection = "InvoicingQueueConnectionString")] string myQueueItem, [ServiceBus("%InvoiceResponseQueueName%", Connection = "InvoicingQueueConnectionString")] IAsyncCollector<InvoiceResponse> output, ILogger log, ExecutionContext context)
+        [Function("InvoiceCustomer")]
+        [ServiceBusOutput("%InvoiceResponseQueueName%", Connection = "InvoicingQueueConnectionString")]
+        public static async Task<InvoiceResponse> Run([ServiceBusTrigger("%InvoiceQueueName%", Connection = "InvoicingQueueConnectionString")] string myQueueItem, FunctionContext context)
         {
+            var log = context.GetLogger("InvoiceCustomer");
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
             var config = new ConfigurationBuilder()
-                .SetBasePath(context.FunctionAppDirectory)
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
-            var stopProcessing = false;
-            if (!stopProcessing)
+
+            var response = await ProcessInvoice(myQueueItem, log, config);
+               return response;
+
+        }
+        private static async Task<BillingFunctions.BillingStatus> GetBillingStatus(int id)
+        {
+            try
             {
-                var response = await ProcessInvoice(myQueueItem, log, config);
-                await output.AddAsync(response);
+                var connectionString = Environment.GetEnvironmentVariable("BillingDatabaseConnectionString");
+                using var connection = new SqlConnection(connectionString);
+                await connection.OpenAsync();
+                using var command = new SqlCommand("SELECT Status FROM Billing WHERE Id = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                var result = await command.ExecuteScalarAsync();
+                return (BillingFunctions.BillingStatus)result;
+            }
+            catch (Exception any)
+            {
+
+                throw;
             }
         }
-
+        public static async Task UpdateBillingStatus(int id, BillingFunctions.BillingStatus status)
+        {
+            var connectionString = Environment.GetEnvironmentVariable("BillingDatabaseConnectionString");
+            using var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var command = new SqlCommand("UPDATE Billing SET Status = @Status WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
+            command.Parameters.AddWithValue("@Status", status);
+            await command.ExecuteNonQueryAsync();
+        }
         public static async Task<InvoiceResponse> ProcessInvoice(string myQueueItem, ILogger log, IConfigurationRoot config)
         {
             var paymentRequest = JsonConvert.DeserializeObject<InvoiceRequest>(myQueueItem);
+
+            var status = await GetBillingStatus(paymentRequest.BillingId);
+            if (status != BillingFunctions.BillingStatus.PaymentReceived)
+            {
+                log.LogWarning($"Billing status is {status} for billing id {paymentRequest.BillingId}");
+                return new InvoiceResponse()
+                {
+                    BillingId = paymentRequest.BillingId,
+                    TenantId = paymentRequest.Tenant.Id,
+                    UserId = paymentRequest.User.UserId,
+                    Error = $"Billing status is {status} for billing id {paymentRequest.BillingId}"
+                };
+            }
+
+            await UpdateBillingStatus(paymentRequest.BillingId, BillingFunctions.BillingStatus.InvoicePending);
+            
             var requestCustomer = MapToCustomer(paymentRequest);
 
 
@@ -49,11 +90,14 @@ namespace payment
                 var invoice = CreateInvoiceReceiptRequest(customer, paymentRequest);
 
                 response = await greenInvoiceClient.AddInvoice(invoice);
+
+                await UpdateBillingStatus(paymentRequest.BillingId, BillingFunctions.BillingStatus.Invoiced);
             }
             catch (Exception anyException)
             {
                 log.LogCritical(anyException, "Unable to create customer or invoice.");
                 response.Error = anyException.ToString();
+                await UpdateBillingStatus(paymentRequest.BillingId, BillingFunctions.BillingStatus.InvoiceFailed);
             }
 
 
