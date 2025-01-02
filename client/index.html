@@ -115,10 +115,24 @@
             "x-redox-userid": "1"
         };
         const UrlBase = "http://localhost:9999/clientapi/";
+        //const UrlBase = "http://localhost:7071/api/";
 
         function pay(id) {
             return fetch(
                 `${UrlBase}PayBillingStatement?id=${id}`, {
+                headers: Headers,
+                method: "POST"
+            })
+        }
+        function create(accountId) {
+            let body = null;
+            if (accountId){
+                body = JSON.stringify({
+                    AccountId: accountId
+                })
+            }
+            return fetch(
+                `${UrlBase}CreateBillingStatements`, {
                 headers: Headers,
                 method: "POST"
             })
@@ -159,18 +173,34 @@
             const host = document.getElementById("pendingInvoice")
             loadItems(result.Items, host);            
         }
+        const codes = {
+            "002": "הכרטיס נגנב",
+            "003": "התקשר לחברת האשראי",
+            "004": "הכרטיס נדחה",
+
+        }
         function loadRejected(result) {
             const host = document.getElementById("rejected")
+            loadItems(result.Items.map(item =>{
+                if (item.Comments){
+                    item.Status = codes[item.Comments.split("&")[0].replace("Response=", "")]
+                }
+                return item
+            }), host);            
+        }
+        
+        function loadLost(result) {
+            const host = document.getElementById("lost")
             loadItems(result.Items, host);            
         }
         
         function loadPending(result){
 
                 console.log("RESULT", result)
-                const billing = result.Items;
+                const billing = result.Items || result;
 
                 var cellact = {
-                    "Amount": 468,
+                    "Amount": 702,
                     "Account": {
                       "Id": 0,
                       "Name": "סלאקט תקשורת בע\"מ"
@@ -201,7 +231,9 @@
                 var item = items[i];
                 var li = document.createElement("LI");
                 li.innerHTML = `<b>${item.Id}: ${item.Account.Name}</b> (${item.Account.Id}) -  <h4><u>${item.Payment?.Amount ?? item.Amount} שח</u> - ${item.Agents} סוכנים</h4> - ${item.User.FullName} (${item.User.Phone}) | ${item.Tenant.Id} - <i><b>${item.BillingMonth}/${item.BillingYear}</b></i>`;
-                
+                if (item.Status){
+                    li.innerHTML += `<h4>סטאטוס:${item.Status||"הצליח"}</h4>`
+                }
                 var btn = document.createElement("BUTTON");
                 btn.setAttribute("type", "button");
                 btn.innerText = 'חייב';
@@ -236,13 +268,18 @@
                 `${UrlBase}BillingStatements?Status=3`, {
                 headers: Headers
             }),
+            fetch(
+                `${UrlBase}BillingStatements?Status=6`, {
+                headers: Headers
+            }),
             ]).then(responses => {
-                const [pending, approved, rejected] = responses;
-                return Promise.all([pending.json(), approved.json(), rejected.json()]);
-            }).then(([pending, approved, rejected]) => {
+                const [pending, approved, rejected, lost] = responses;
+                return Promise.all([pending.json(), approved.json(), rejected.json(), lost.json()]);
+            }).then(([pending, approved, rejected, lost]) => {
                 loadPending(pending);
                 loadApproved(approved);
                 loadRejected(rejected);
+                loadLost(lost);
             });
         }
         function takePayment(selected) {
@@ -262,6 +299,8 @@
     <h1>REDOX</h1>
     <button type="button" onclick="load()">REFRESH</button>
     <button type="button" onclick="pay(0)">PAY ALL TOKENS</button>
+    <hr/>
+    <button type="button" onclick="create()">Create Billing Statements</button>
     <div class="container">
         <div>
             <div>
@@ -276,6 +315,12 @@
                 <ol id="rejected" style="max-height:1200px; overflow:auto"></ol>
        
             </div>
+            <div>
+                <h3>Lost Payments</h3>
+    
+                <ol id="lost" style="max-height:1200px; overflow:auto"></ol>
+       
+            </div>            
             <div>
                 <h3>Pending Invoice</h3>
     

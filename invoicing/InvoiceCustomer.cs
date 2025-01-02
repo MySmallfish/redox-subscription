@@ -134,12 +134,13 @@ namespace payment
         private static InvoiceReceipt CreateInvoiceReceiptRequest(Customer customer, InvoiceRequest paymentRequest)
         {
             var paymentDate = paymentRequest.Payment.PaymentDate.ToString("yyyy-MM-dd");
+
             var invoice = new InvoiceReceipt
             {
                 Client = customer,
 
                 Description = paymentRequest.Description,
-                Remarks = paymentRequest.Comments,
+                Remarks = !string.IsNullOrEmpty(paymentRequest.Comments) && paymentRequest.Comments.StartsWith("Response=") ? string.Empty :  paymentRequest.Comments,
                 Income = paymentRequest.Items.Select(MapToIncomeItem).ToArray(),
                 Attachment = true,
                 Payment = new[]
